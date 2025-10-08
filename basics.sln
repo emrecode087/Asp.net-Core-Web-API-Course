@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bookDemo", "bookDemo\bookDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{5CA6023A-DF3B-4FCA-99DC-1895ED225712}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{F17BAADF-837F-45FA-A920-91D2395C2012}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repositories\Repositories.csproj", "{B28DDB01-5DCF-4555-8225-B5C263C69935}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{5CA6023A-DF3B-4FCA-99DC-1895ED225712}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CA6023A-DF3B-4FCA-99DC-1895ED225712}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CA6023A-DF3B-4FCA-99DC-1895ED225712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F17BAADF-837F-45FA-A920-91D2395C2012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F17BAADF-837F-45FA-A920-91D2395C2012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F17BAADF-837F-45FA-A920-91D2395C2012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F17BAADF-837F-45FA-A920-91D2395C2012}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B28DDB01-5DCF-4555-8225-B5C263C69935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B28DDB01-5DCF-4555-8225-B5C263C69935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B28DDB01-5DCF-4555-8225-B5C263C69935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B28DDB01-5DCF-4555-8225-B5C263C69935}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
