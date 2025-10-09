@@ -1,7 +1,9 @@
 ﻿using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApi.Repositories;
+using Repositories.Contracts;
+using Services.Contracts;
+using System;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -9,69 +11,86 @@ namespace WebApi.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly RepositoryContext _context;
+        private readonly IServiceManager _manager;
 
-        public BooksController(RepositoryContext context)
+        public BooksController(IServiceManager manager)
         {
-            _context = context;
+            _manager = manager;
         }
 
         [HttpGet("GetAllBooks")]
         public IActionResult GetAllBooks()
         {
-            var books = _context.Books.ToList();
+            var books = _manager.BookService.GetAllBooks(false);
             return Ok(books);
         }
 
         [HttpGet("GetBookById/{id}")]
-        public async Task<IActionResult> GetBookById(int id)
+        public IActionResult GetBookById(int id)
         {
-            var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
-            if (book == null)
-                return NotFound();
+            try
+            {
+                var book = _manager.BookService.GetOneBookById(id, false);
+                if (book == null)
+                    return NotFound();
 
-            return Ok(book);
+                return Ok(book);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBook([FromBody] Book book)
+        public IActionResult CreateBook([FromBody] Book book)
         {
             if (book == null)
                 return BadRequest("Book object cannot be null.");
 
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetBookById), new { id = book.Id }, book);
+            try
+            {
+                _manager.BookService.CreateOneBook(book);
+                
+                return Ok("Book created successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] Book book)
+        public IActionResult UpdateBook(int id, [FromBody] Book book)
         {
             if (book == null)
                 return BadRequest("Book object cannot be null.");
 
-            var entity = await _context.Books.FindAsync(id);
-            if (entity == null)
-                return NotFound();
+            try
+            {
+                _manager.BookService.UpdateOneBook(id, book, true);
 
-            entity.Title = book.Title;
-            entity.Price = book.Price;
-
-            await _context.SaveChangesAsync();
-            return Ok(entity);
+                return NoContent(); // 204
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(int id)
+        public IActionResult DeleteBook(int id)
         {
-            var entity = await _context.Books.FindAsync(id);
-            if (entity == null)
-                return NotFound();
-            else
+            try
+            { 
+                _manager.BookService.DeleteOneBook(id, false);
+                
+
+                return NoContent();
+            }
+            catch (Exception ex)
             {
-                _context.Books.Remove(entity);
-                await _context.SaveChangesAsync();
-                return Ok(entity+ " is deleted");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }
