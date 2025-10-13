@@ -2,6 +2,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Entities.ErrorModel;
+using Entities.Exceptions;
 
 namespace WebApi.Extensions
 {
@@ -13,13 +14,20 @@ namespace WebApi.Extensions
             {
                 appError.Run(async context =>
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    
                     context.Response.ContentType = "application/json";
 
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
 
                     if (contextFeature != null)
                     {
+                        // Yeni hata eklenmek istendiğinde  switch bölümüne bu hata eklenir! 
+                        context.Response.StatusCode = contextFeature.Error switch
+                        {
+                            NotFoundException => StatusCodes.Status404NotFound ,
+                              _ => StatusCodes.Status500InternalServerError
+                        };
+
                         //  Logger'ı her istek için request scope'dan al
                         var logger = context.RequestServices.GetRequiredService<ILoggerService>();
                         logger.LogError($"Bir hata oluştu: {contextFeature.Error}");
@@ -27,7 +35,7 @@ namespace WebApi.Extensions
                         await context.Response.WriteAsync(new ErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,
-                            Message = "Internal Server Error - Bir hata oluştu."
+                            Message = contextFeature.Error.Message
                         }.ToString());
                     }
                 });
